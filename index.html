@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tea Party Invitations</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(to bottom right, #ffe4f7, #ffcce6); /* Pretty gradient background */
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Container for the input form */
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Styling for all input elements and buttons */
+        textarea, input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #ff99c8; /* Pink color */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff6fa5; /* Darker pink on hover */
+        }
+
+        /* Message display styling */
+        .message {
+            color: green;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        /* Subtitle character limit warning */
+        .subtitle-warning {
+            color: red;
+            font-size: 12px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Printable Invitations</h1>
+        <p>Enter guest names, details, choose a color, font, layout size, and add a subtitle.</p>
+        
+        <!-- Input fields for user details -->
+        <textarea id="guestNames" placeholder="Enter guest names separated by commas"></textarea>
+        <input type="text" id="partyDate" placeholder="Enter the party date (e.g., January 20, 2025)" required>
+        <input type="text" id="partyTime" placeholder="Enter the party time (e.g., 3:00 PM)" required>
+        <input type="text" id="partyLocation" placeholder="Enter the party location (e.g., 123 Tea Street)" required>
+        
+        <!-- Input for subtitle -->
+        <input type="text" id="subtitle" maxlength="50" placeholder="Enter a subtitle (max 50 characters)">
+        <div id="subtitleWarning" class="subtitle-warning"></div>
+
+        <!-- Dropdown for selecting color theme -->
+        <select id="colorTheme">
+            <option value="#ff99c8">Pink</option>
+            <option value="#99ccff">Blue</option>
+            <option value="#99ff99">Green</option>
+            <option value="#ffff99">Yellow</option>
+        </select>
+        
+        <!-- Dropdown for selecting layout size -->
+        <select id="layoutSize">
+            <option value="A4">A4 (Portrait)</option>
+            <option value="A5">A5 (Landscape)</option>
+        </select>
+
+        <!-- Dropdown for selecting font style -->
+        <select id="fontStyle">
+            <option value="'Comic Sans MS', cursive, sans-serif">Comic Sans</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+            <option value="'Courier New', monospace">Courier New</option>
+            <option value="'Georgia', serif">Georgia</option>
+        </select>
+
+        <button id="generateFiles">Generate Invitations</button>
+        <p class="message" id="message"></p>
+    </div>
+
+    <script>
+        // Entry point: Add event listener to the button
+        document.getElementById('generateFiles').addEventListener('click', handleGenerateInvitations);
+
+        // Subtitle input field and warning element
+        const subtitleInput = document.getElementById('subtitle');
+        const subtitleWarning = document.getElementById('subtitleWarning');
+
+        // Monitor subtitle input to ensure it doesn't exceed the character limit
+        subtitleInput.addEventListener('input', () => {
+            const remaining = 50 - subtitleInput.value.length;
+            subtitleWarning.textContent = remaining >= 0
+                ? `${remaining} characters remaining.`
+                : 'Character limit exceeded!';
+        });
+
+        /**
+         * Main controller function to handle the generation process.
+         * This function collects inputs, validates them, generates invitations, and provides user feedback.
+         */
+        function handleGenerateInvitations() {
+            const inputs = collectInput(); // Collect user input
+            if (!validateInput(inputs)) return; // Validate the collected input
+            generateInvitations(inputs); // Generate the invitations
+            showSuccessMessage(); // Show a success message
+        }
+
+        /**
+         * Collect all input values from the DOM.
+         * @returns {Object} An object containing all user inputs.
+         */
+        function collectInput() {
+            return {
+                guestNames: document.getElementById('guestNames').value.split(',').map(name => name.trim()).filter(name => name !== ''),
+                partyDate: document.getElementById('partyDate').value,
+                partyTime: document.getElementById('partyTime').value,
+                partyLocation: document.getElementById('partyLocation').value,
+                subtitle: subtitleInput.value,
+                colorTheme: document.getElementById('colorTheme').value,
+                layoutSize: document.getElementById('layoutSize').value, // Capture the selected layout size (A4 or A5)
+                fontStyle: document.getElementById('fontStyle').value // Capture the selected font style
+            };
+        }
+
+        /**
+         * Validate the collected inputs.
+         * Ensures all required fields are filled, subtitle length is within limits, and the guest count does not exceed 30.
+         * @param {Object} inputs The collected inputs to validate.
+         * @returns {boolean} True if valid, false otherwise.
+         */
+        function validateInput({ guestNames, partyDate, partyTime, partyLocation, subtitle }) {
+            if (guestNames.length === 0 || !partyDate || !partyTime || !partyLocation) {
+                alert('Please fill out all fields and add at least one guest name.');
+                return false;
+            }
+            if (guestNames.length > 30) {
+                alert('You can only invite up to 30 guests.');
+                return false;
+            }
+            if (subtitle.length > 50) {
+                alert('Subtitle exceeds the maximum limit of 50 characters.');
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Generate individual invitations for each guest.
+         * @param {Object} inputs The validated user inputs.
+         */
+        function generateInvitations({ guestNames, partyDate, partyTime, partyLocation, subtitle, colorTheme, layoutSize, fontStyle }) {
+            guestNames.forEach(guest => {
+                const content = createInvitationContent(guest, partyDate, partyTime, partyLocation, subtitle, colorTheme, layoutSize, fontStyle); // Create content
+                downloadInvitation(content, guest); // Trigger download
+            });
+        }
+
+        /**
+         * Create the HTML content for an invitation.
+         * @param {string} guest The guest's name.
+         * @param {string} partyDate The party date.
+         * @param {string} partyTime The party time.
+         * @param {string} partyLocation The party location.
+         * @param {string} subtitle The subtitle text.
+         * @param {string} colorTheme The chosen color theme.
+         * @param {string} layoutSize The chosen layout size (A4 or A5).
+         * @param {string} fontStyle The chosen font style.
+         * @returns {string} The HTML content as a string.
+         */
+        function createInvitationContent(guest, partyDate, partyTime, partyLocation, subtitle, colorTheme, layoutSize, fontStyle) {
+            // Adjust styles based on the selected layout size
+            const layoutStyles = layoutSize === "A4"
+                ? "width: 595px; height: 842px; padding: 50px;" // A4 dimensions (portrait)
+                : "width: 842px; height: 595px; padding: 30px;" // A5 dimensions (landscape)
+
+            return `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Invitation for ${guest}</title>
+                    <style>
+                        /* Invitation body styling */
+                        body {
+                            font-family: ${fontStyle}; /* Dynamic font style */
+                            text-align: center;
+                            background: ${colorTheme};
+                            margin: 0;
+                            padding: 20px;
+                        }
+                        .invitation {
+                            ${layoutStyles} /* Dynamic layout based on selected size */
+                            background: linear-gradient(to bottom, white 70%, ${colorTheme}); /* Gradient effect */
+                            margin: auto;
+                            border: 3px solid ${colorTheme};
+                            border-radius: 20px;
+                            color: #333;
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                        }
+                        .invitation h2 {
+                            color: ${colorTheme};
+                            font-size: 24px;
+                        }
+                        .subtitle {
+                            font-size: 18px;
+                            color: #333;
+                            margin: 10px 0;
+                        }
+                        .emoji {
+                            font-size: 50px;
+                            margin: 10px 0;
+                        }
+                        .details {
+                            background: rgba(255, 255, 255, 0.9);
+                            padding: 20px;
+                            border-radius: 10px;
+                            margin-top: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="invitation">
+                        <h2>You're Invited, ${guest}!</h2>
+                        <div class="subtitle">${subtitle}</div> <!-- Dynamic subtitle -->
+                        <div class="emoji">🎉☕🍰</div> <!-- Decorative emojis -->
+                        <div class="details">
+                            <p><strong>You've been invited</strong></p>
+                            <p><strong>Date:</strong> ${partyDate}</p>
+                            <p><strong>Time:</strong> ${partyTime}</p>
+                            <p><strong>Place:</strong> ${partyLocation}</p>
+                            <p><strong>RSVP:</strong> We can't wait to see you!</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+        }
+
+        /**
+         * Trigger the download of the invitation as an HTML file.
+         * @param {string} content The HTML content.
+         * @param {string} guest The guest's name for the filename.
+         */
+        function downloadInvitation(content, guest) {
+            const blob = new Blob([content], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Invitation_${guest.replace(/ /g, '_')}.html`;
+            link.click();
+        }
+
+        /**
+         * Show a success message to the user after generating invitations.
+         */
+        function showSuccessMessage() {
+            document.getElementById('message').innerText = 'Invitations have been generated and downloaded for all guests!';
+        }
+    </script>
+</body>
+</html>
