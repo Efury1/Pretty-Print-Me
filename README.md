@@ -16,6 +16,10 @@ This project is a website where users can create and print invitation designs. T
 2. **`Page.jpg`:**
    - This image shows how the use rinputs invitation dteails
 
+![Page](Page.jpg)
+
+
+
 
 4. **`index.html`:**
    - The main HTML file for the website.
