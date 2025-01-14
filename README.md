@@ -27,4 +27,5 @@ This project is a website where users can create and print invitation designs. T
 
 ---
 
+For more information view this article: https://medium.com/@girlchronicallyonline/how-to-deploy-your-first-static-website-on-aws-s3-664f297c4424
 
