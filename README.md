@@ -8,9 +8,10 @@ This project is a website where users can create and print invitation designs. T
 
 ### **Files in the Repository:**
 
-1. **`Lucy Invitation.jpg`:**
+1. **`Lucy Invitation:**
    - A sample image of an invitation titled "Lucy Invitation."
    - A example of what invitations look like
+ ![Lucy Invitation Example](Lucy%20Invitation.jpg)
 
 2. **`Page.jpg`:**
    - This image shows how the use rinputs invitation dteails
