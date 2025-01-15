@@ -14,7 +14,7 @@ This project is a website where users can create and print invitation designs. T
  ![Lucy Invitation Example](Lucy%20Invitation.jpg)
 
 2. **`Page.jpg`:**
-   - This image shows how the use rinputs invitation dteails
+   - This image shows how the use inputs for the invitation details
 
 ![Page](Page.jpg)
 
