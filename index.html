@@ -59,6 +59,27 @@
             font-size: 12px;
             text-align: left;
         }
+
+        #previewArea {
+            max-width: 700px; /* Limit the preview area width */
+            max-height: 550px;
+            overflow: hidden;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            background-color: #fff; /* Add a background for clarity */
+        }
+        
+        #previewContent {
+            transform: scale(0.5); /* Scale down the content */
+            transform-origin: top center; /* Anchor scaling to the top left */
+            width: auto; /* Adjust width automatically */
+            height: auto; /* Adjust height automatically */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        
+        
     </style>
 </head>
 <body>
@@ -99,8 +120,15 @@
             <option value="'Georgia', serif">Georgia</option>
         </select>
 
+        <div id="previewArea" class="container" style="margin-top: 20px; display: none;">
+            <h2>Invitation Preview</h2>
+            <div id="previewContent"></div>
+        </div>
+        
+
         <button id="generateFiles">Generate Invitations</button>
         <p class="message" id="message"></p>
+        
     </div>
 
     <script>
@@ -295,6 +323,76 @@
         function showSuccessMessage() {
             document.getElementById('message').innerText = 'Invitations have been generated and downloaded for all guests!';
         }
+
+        document.getElementById('generateFiles').addEventListener('click', () => {
+            const inputs = collectInput(); // Collect user input
+            if (!validateInput(inputs)) return; // Validate inputs
+            renderPreview(inputs); // Render the preview
+            showSuccessMessage(); // Show the success message
+        });
+        
+        /**
+         * Render a preview of the invitation in the preview area.
+         * @param {Object} inputs The collected inputs.
+         */
+        function renderPreview({ guestNames, partyDate, partyTime, partyLocation, subtitle, colorTheme, layoutSize, fontStyle }) {
+            const previewArea = document.getElementById('previewArea');
+            const previewContent = document.getElementById('previewContent');
+        
+            // Use the first guest's name for the preview
+            const guest = guestNames.length > 0 ? guestNames[0] : 'Guest';
+            const content = createInvitationContent(guest, partyDate, partyTime, partyLocation, subtitle, colorTheme, layoutSize, fontStyle);
+        
+            previewArea.style.display = 'block'; // Show the preview area
+            previewContent.innerHTML = content; // Insert the preview content
+                
+        }
+
+        // Attach event listeners to all input fields
+        document.querySelectorAll('#guestNames, #partyDate, #partyTime, #partyLocation, #subtitle, #colorTheme, #layoutSize, #fontStyle')
+        .forEach(input => input.addEventListener('input', handleDynamicPreview));
+
+        /**
+        * Dynamically generate and update the preview as inputs are filled.
+        */
+        function handleDynamicPreview() {
+        const inputs = collectInput(); // Collect user input
+        if (validateInputsForPreview(inputs)) {
+            renderPreview(inputs); // Generate preview dynamically
+        }
+        }
+
+        /**
+        * Validate inputs for the preview (partial validation for required fields).
+        * @param {Object} inputs The collected inputs to validate.
+        * @returns {boolean} True if inputs are sufficient for preview, false otherwise.
+        */
+        function validateInputsForPreview({ guestNames, partyDate, partyTime, partyLocation }) {
+        return (
+            guestNames.length > 0 &&
+            partyDate.trim() !== '' &&
+            partyTime.trim() !== '' &&
+            partyLocation.trim() !== ''
+        );
+        }
+
+        /**
+        * Render a preview of the invitation in the preview area.
+        * @param {Object} inputs The collected inputs.
+        */
+        function renderPreview({ guestNames, partyDate, partyTime, partyLocation, subtitle, colorTheme, layoutSize, fontStyle }) {
+        const previewArea = document.getElementById('previewArea');
+        const previewContent = document.getElementById('previewContent');
+
+        // Use the first guest's name for the preview
+        const guest = guestNames.length > 0 ? guestNames[0] : 'Guest';
+        const content = createInvitationContent(guest, partyDate, partyTime, partyLocation, subtitle, colorTheme, layoutSize, fontStyle);
+
+        previewArea.style.display = 'block'; // Show the preview area
+        previewContent.innerHTML = content; // Insert the preview content
+}
+
+
     </script>
 </body>
 </html>
