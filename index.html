@@ -107,9 +107,11 @@
         // Entry point: Add event listener to the button
         document.getElementById('generateFiles').addEventListener('click', handleGenerateInvitations);
 
-        // Subtitle input field and warning element
+             // Subtitle input field and warning element
         const subtitleInput = document.getElementById('subtitle');
         const subtitleWarning = document.getElementById('subtitleWarning');
+        // These are words we don't want users to be able to type into input box
+        const prohibitedWords = ['fuck', 'bullshit', 'dick'];
 
         // Monitor subtitle input to ensure it doesn't exceed the character limit
         subtitleInput.addEventListener('input', () => {
@@ -117,6 +119,16 @@
             subtitleWarning.textContent = remaining >= 0
                 ? `${remaining} characters remaining.`
                 : 'Character limit exceeded!';
+
+                let inputValue = subtitleInput.value.toLowerCase(); // Conver input to lowercase for case-insensitive comparison
+                
+                // Checking for prohibited works
+                prohibitedWords.forEach((word) => {
+                    if(inputValue.includes(word)) {
+                        inputValue = inputValue.split(word).join('*****');
+                        alert('Inappropriate words are not allowed');
+                    }
+                })
         });
 
         /**
