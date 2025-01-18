@@ -125,10 +125,12 @@
                 // Checking for prohibited works
                 prohibitedWords.forEach((word) => {
                     if(inputValue.includes(word)) {
-                        inputValue = inputValue.split(word).join('*****');
+                        inputValue = inputValue.replace(new RegExp(word, 'gi'), '*****');
                         alert('Inappropriate words are not allowed');
                     }
-                })
+                });
+                // Update the input value to the sanitized version
+                subtitleInput.value = inputValue;
         });
 
         /**
